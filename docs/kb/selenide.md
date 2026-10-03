@@ -69,8 +69,17 @@ checkbox.shouldBe(selected);
 
 ## Как запустить?
 
-`./gradlew test` — Gradle Wrapper в git, установленный Gradle не нужен.
-Драйвер браузера скачивает Selenium Manager автоматически.
+```bash
+./gradlew test --rerun-tasks
+```
+
+Gradle Wrapper в git, установленный Gradle не нужен. Драйвер
+браузера скачивает Selenium Manager автоматически.
+
+`--rerun-tasks` обязателен: без него повторный локальный запуск
+пометит задачу `up-to-date` и не выполнит ни одного теста — за
+0.5 с вы получите `BUILD SUCCESSFUL`, который ничего не проверяет.
+В CI и на Jenkins флаг не нужен: там свежий checkout, кэша нет.
 
 ## Как добавить новый тест?
 

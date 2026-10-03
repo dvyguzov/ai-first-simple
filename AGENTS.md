@@ -7,7 +7,7 @@
 ## Команды
 
 ```bash
-./gradlew test                      # запуск тестов
+./gradlew test --rerun-tasks         # запуск тестов (без флага — up-to-date)
 allure serve build/allure-results   # локальный Allure-отчёт
 ```
 
