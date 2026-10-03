@@ -1,6 +1,6 @@
 # ai-first-simple
 
-[![CI](https://github.com/svasenkov/ai-first-simple/actions/workflows/ci.yml/badge.svg)](https://github.com/svasenkov/ai-first-simple/actions/workflows/ci.yml)
+[![CI](https://github.com/dvyguzov/ai-first-simple/actions/workflows/ci.yml/badge.svg)](https://github.com/dvyguzov/ai-first-simple/actions/workflows/ci.yml)
 
 Учебный репозиторий «AI-first QA»: минимальный продукт + один автотест.
 
@@ -8,7 +8,7 @@
 
 `index.html` — форма логина. Валидные креды: `admin` / `admin123`.
 Страница опубликована на GitHub Pages:
-https://svasenkov.github.io/ai-first-simple/index.html — тесты
+https://dvyguzov.github.io/ai-first-simple/index.html — тесты
 открывают именно её.
 
 ## Тесты
