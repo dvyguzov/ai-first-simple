@@ -21,10 +21,11 @@
 
 ## Откуда тест берёт страницу?
 
-`open("https://svasenkov.github.io/ai-first-simple/index.html")` —
-тест открывает форму, опубликованную на GitHub Pages из `main`
-(ADR-0006). Локальные правки `index.html` прогон не увидит, пока
-они не уехали в `main` и Pages не перевыложил страницу.
+`open("https://dvyguzov.github.io/ai-first-simple/index.html")` —
+тест открывает форму, опубликованную на GitHub Pages из форка
+(ADR-0009). Локальные правки `index.html` прогон увидит только после
+пуша в форк и перевыклада Pages: до этого тесты честно проверяют
+старую страницу и остаются зелёными.
 
 ## Как выглядят шаги теста?
 
@@ -33,7 +34,7 @@ Selenide-стиль: `$("css")` находит элемент, `.setValue()/.cli
 из `LoginTest.successfulLogin`:
 
 ```java
-open("https://svasenkov.github.io/ai-first-simple/index.html");
+open("https://dvyguzov.github.io/ai-first-simple/index.html");
 $("#username").setValue("admin");
 $("#password").setValue("admin123");
 $("button[type=submit]").click();
@@ -41,7 +42,24 @@ $("#message").shouldHave(text("Вход выполнен успешно"));
 ```
 
 Локаторы и тексты берутся из `index.html` (`#username`, `#password`,
-`button[type=submit]`, `#message`), валидные креды — `admin`/`admin123`.
+`#remember-me`, `button[type=submit]`, `#message`), валидные креды —
+`admin`/`admin123`. Тексты ошибок проверяются дословно, список
+актуальных — в ADR-0008.
+
+## Почему цепочка из `click()` не собирается?
+
+В Selenide 7.9.3 у `SelenideElement` две перегрузки `click()`:
+`SelenideElement click(ClickOptions)` и `void click()`. Без аргументов
+вызывается `void`-версия, поэтому `click().shouldBe(...)` не
+компилируется («void cannot be dereferenced»). Цепочку строят от
+`shouldBe`, а `click()` вызывают отдельной строкой:
+
+```java
+SelenideElement checkbox = $("#remember-me");
+checkbox.shouldNotBe(selected);
+checkbox.click();
+checkbox.shouldBe(selected);
+```
 
 ## Где ожидания? Почему нет sleep/wait?
 
@@ -51,11 +69,24 @@ $("#message").shouldHave(text("Вход выполнен успешно"));
 
 ## Как запустить?
 
-`./gradlew test` — Gradle Wrapper в git, установленный Gradle не нужен.
-Драйвер браузера скачивает Selenium Manager автоматически.
+```bash
+./gradlew test --rerun-tasks
+```
+
+Gradle Wrapper в git, установленный Gradle не нужен. Драйвер
+браузера скачивает Selenium Manager автоматически.
+
+`--rerun-tasks` обязателен: без него повторный локальный запуск
+пометит задачу `up-to-date` и не выполнит ни одного теста — за
+0.5 с вы получите `BUILD SUCCESSFUL`, который ничего не проверяет.
+В CI и на Jenkins флаг не нужен: там свежий checkout, кэша нет.
 
 ## Как добавить новый тест?
 
-Класс в `src/test/java/qa/aifirst/`, наследование от `TestBase`,
-один метод = один сценарий, `@DisplayName` на русском. Процедура —
-skill `.devin/skills/add-ui-test/SKILL.md`.
+Один класс — одна страница. Сценарии формы логина лежат в
+`LoginTest`, новый сценарий — это новый метод там же, а не новый
+класс. Новый класс заводи только под новую страницу.
+
+Метод наследует `TestBase`, один метод = один сценарий,
+`@DisplayName` на русском. Процедура — skill
+`.devin/skills/add-ui-test/SKILL.md`.
