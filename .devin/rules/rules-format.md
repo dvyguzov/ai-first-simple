@@ -23,6 +23,11 @@ globs: ["<паттерн>", "<ещё паттерн>"]
   Проверка: `devin rules list` не должен показывать YAML parse error.
 
 - Один файл — одно правило.
-- `trigger: glob` — правило активно только при работе с файлами по `globs`;
+- `trigger: glob` — правило нужно только при работе с файлами по `globs`;
   `always_on` — в каждой сессии.
+- Frontmatter `trigger`/`globs` — разметка для Devin. opencode их
+  игнорирует: scoped-правило агент открывает сам по таблице
+  «Правила по glob» в `AGENTS.md`, always-on файл должен быть
+  перечислен в `instructions` в `opencode.json`. Новое правило →
+  строка в таблице `AGENTS.md`, always-on → строка в `opencode.json`.
 - Текст правила короткий и конкретный.
